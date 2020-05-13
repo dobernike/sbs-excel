@@ -20,16 +20,19 @@ export function matrix($target, $current) {
   }, [])
 }
 
-export function nextSelector(key, {col, row}) {
+export function nextSelector(key, {col, row}, rowsCount) {
   const MIN_VALUE = 0
+  const MAX_ROW_VALUE = rowsCount - 1
+  const MAX_COL_VALUE = 25
+
   switch (key) {
     case 'Enter':
     case 'ArrowDown':
-      row++
+      row = row + 1 > MAX_ROW_VALUE ? MAX_ROW_VALUE : row + 1
       break
     case 'Tab':
     case 'ArrowRight':
-      col++
+      col = col + 1 > MAX_COL_VALUE ? MAX_COL_VALUE : col + 1
       break
     case 'ArrowLeft':
       col = col - 1 < MIN_VALUE ? MIN_VALUE : col - 1

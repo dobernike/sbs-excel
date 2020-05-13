@@ -5,19 +5,21 @@ import {resizeHandler} from './table.resize'
 import {shouldResize, isCell, matrix, nextSelector} from './table.functions'
 import {TableSelection} from './TableSelection'
 
+const ROWS_COUNT = 20
+
 export class Table extends ExcelComponent {
   static className = 'excel__table'
 
   constructor($root, options) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown'],
+      listeners: ['mousedown', 'keydown', 'input'],
       ...options
     })
   }
 
   toHTML() {
-    return createTable(20)
+    return createTable(ROWS_COUNT)
   }
 
   prepare() {
@@ -27,13 +29,20 @@ export class Table extends ExcelComponent {
   init() {
     super.init()
 
-    const $cell = this.$root.find('[data-id="0:0"')
-    this.selection.select($cell)
+    this.selectCell(this.$root.find('[data-id="0:0"]'))
 
-    this.emitter.subscribe('it is working', text => {
+    this.$on('formula:input', text => {
       this.selection.current.text(text)
-      console.log('table from formula', text)
     })
+
+    this.$on('formula:done', () => {
+      this.selection.current.focus()
+    })
+  }
+
+  selectCell($cell) {
+    this.selection.select($cell)
+    this.$emit('table:select', $cell)
   }
 
   onMousedown(event) {
@@ -46,7 +55,7 @@ export class Table extends ExcelComponent {
             .map(id => this.$root.find(`[data-id="${id}"]`))
         this.selection.selectGroup($cells)
       } else {
-        this.selection.select($target)
+        this.selectCell($target)
       }
     }
   }
@@ -66,8 +75,12 @@ export class Table extends ExcelComponent {
     if (keys.includes(key) && !event.shiftKey) {
       event.preventDefault()
       const id = this.selection.current.id(true)
-      const $next = this.$root.find(nextSelector(key, id))
-      this.selection.select($next)
+      const $next = this.$root.find(nextSelector(key, id, ROWS_COUNT))
+      this.selectCell($next)
     }
+  }
+
+  onInput(event) {
+    this.$emit('table:input', $(event.target))
   }
 }

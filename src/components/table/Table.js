@@ -5,6 +5,8 @@ import {resizeHandler} from './table.resize'
 import {shouldResize, isCell, matrix, nextSelector} from './table.functions'
 import {TableSelection} from './TableSelection'
 
+const ROWS_COUNT = 20
+
 export class Table extends ExcelComponent {
   static className = 'excel__table'
 
@@ -17,7 +19,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
-    return createTable(20)
+    return createTable(ROWS_COUNT)
   }
 
   prepare() {
@@ -30,9 +32,8 @@ export class Table extends ExcelComponent {
     const $cell = this.$root.find('[data-id="0:0"')
     this.selection.select($cell)
 
-    this.emitter.subscribe('it is working', text => {
+    this.$on('formula:input', text => {
       this.selection.current.text(text)
-      console.log('table from formula', text)
     })
   }
 
@@ -66,7 +67,7 @@ export class Table extends ExcelComponent {
     if (keys.includes(key) && !event.shiftKey) {
       event.preventDefault()
       const id = this.selection.current.id(true)
-      const $next = this.$root.find(nextSelector(key, id))
+      const $next = this.$root.find(nextSelector(key, id, ROWS_COUNT))
       this.selection.select($next)
     }
   }

@@ -13,7 +13,7 @@ export class Table extends ExcelComponent {
   constructor($root, options) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown'],
+      listeners: ['mousedown', 'keydown', 'input'],
       ...options
     })
   }
@@ -29,12 +29,20 @@ export class Table extends ExcelComponent {
   init() {
     super.init()
 
-    const $cell = this.$root.find('[data-id="0:0"')
-    this.selection.select($cell)
+    this.selectCell(this.$root.find('[data-id="0:0"]'))
 
     this.$on('formula:input', text => {
       this.selection.current.text(text)
     })
+
+    this.$on('formula:done', () => {
+      this.selection.current.focus()
+    })
+  }
+
+  selectCell($cell) {
+    this.selection.select($cell)
+    this.$emit('table:select', $cell)
   }
 
   onMousedown(event) {
@@ -47,7 +55,7 @@ export class Table extends ExcelComponent {
             .map(id => this.$root.find(`[data-id="${id}"]`))
         this.selection.selectGroup($cells)
       } else {
-        this.selection.select($target)
+        this.selectCell($target)
       }
     }
   }
@@ -68,7 +76,11 @@ export class Table extends ExcelComponent {
       event.preventDefault()
       const id = this.selection.current.id(true)
       const $next = this.$root.find(nextSelector(key, id, ROWS_COUNT))
-      this.selection.select($next)
+      this.selectCell($next)
     }
+  }
+
+  onInput(event) {
+    this.$emit('table:input', $(event.target))
   }
 }

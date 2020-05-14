@@ -20,7 +20,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
-    return createTable(ROWS_COUNT)
+    return createTable(ROWS_COUNT, this.store.getState())
   }
 
   prepare() {

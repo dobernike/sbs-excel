@@ -5,7 +5,7 @@ import {resizeHandler} from './table.resize'
 import {shouldResize, isCell, matrix, nextSelector} from './table.functions'
 import {TableSelection} from './TableSelection'
 import * as actions from '@/redux/actions'
-import {defaultStyles} from '@/contstants';
+import {defaultStyles} from '@/constants';
 import {parse} from '@core/parse';
 
 const ROWS_COUNT = 20

@@ -15,7 +15,7 @@ class Dom {
 
   text(text) {
     if (typeof text !== 'undefined') {
-      this.$el.innerHTML = text
+      this.$el.textContent = text
       return this
     }
     if (this.$el.tagName.toLowerCase() === 'input') {
@@ -33,8 +33,12 @@ class Dom {
     this.$el.addEventListener(eventType, callback)
   }
 
-  off(eventType, callback ) {
+  off(eventType, callback) {
     this.$el.removeEventListener(eventType, callback)
+  }
+
+  find(selector) {
+    return $(this.$el.querySelector(selector))
   }
 
   append(node) {
@@ -63,10 +67,6 @@ class Dom {
     return this.$el.getBoundingClientRect()
   }
 
-  find(selector) {
-    return $(this.$el.querySelector(selector))
-  }
-
   findAll(selector) {
     return this.$el.querySelectorAll(selector)
   }
@@ -74,7 +74,9 @@ class Dom {
   css(styles = {}) {
     Object
         .keys(styles)
-        .forEach(key => this.$el.style[key] = styles[key])
+        .forEach(key => {
+          this.$el.style[key] = styles[key]
+        })
   }
 
   getStyles(styles = []) {
@@ -118,7 +120,6 @@ class Dom {
     return this
   }
 }
-
 
 export function $(selector) {
   return new Dom(selector)

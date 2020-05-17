@@ -19,6 +19,7 @@ describe('createStore:', function() {
     store = createStore(reducer, initialState)
     handler = jest.fn()
   })
+
   test('should return store object', () => {
     expect(store).toBeDefined()
     expect(store.dispatch).toBeDefined()

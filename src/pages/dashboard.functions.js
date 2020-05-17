@@ -7,8 +7,6 @@ function toHTML() {
   `
 }
 
-// excel:12321
-// excel:1233321
 function getAllKeys() {
   const keys = []
   for (let i = 0; i < localStorage.length; i++) {
